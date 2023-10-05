@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Location of the folder that stores the backups
+BACKUP_DIR='/archives'
+
 function echoUsage() {
     echo "Usage: ${0} [-dra] USERNAME [USERNAME] ..." >&2
     echo 'Disables or deletes a user' >&2
@@ -14,19 +17,22 @@ function createBackup() {
     local HOME_DIR="/home/${USERNAME}/"
 
     # Create /archives directory if it doesn't exist
-    if [[ ! -f '/archives' ]]; then
-        mkdir /archives
+    if [[ ! -d "${BACKUP_DIR}" ]]; then
+        mkdir "${BACKUP_DIR}"
     fi
     # Create the backup
-    tar -zcf "/archives/${USERNAME}.tar.gz" "${HOME_DIR}"
-    echo "Backup created at /archives/${USERNAME}.tar.gz"
+    tar -zcf "${BACKUP_DIR}/${USERNAME}.tar.gz" "${HOME_DIR}" &>'/dev/null'
+    echo "Backup created at ${BACKUP_DIR}/${USERNAME}.tar.gz"
 }
 
 function isSystemAccount() {
     # Usage: isSystemAccount [USERNAME]
     local USERNAME="${1}"
     local USER_ID
-    USER_ID=$(id -u "${USERNAME}")
+    if ! USER_ID=$(id -u "${USERNAME}" 2>'/dev/null'); then
+        echo "Error: user ${USERNAME} does not exist" >&2
+        exit 1
+    fi
 
     if [[ "${USER_ID}" -le 1000 ]]; then
         return 0
