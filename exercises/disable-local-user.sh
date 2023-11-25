@@ -24,7 +24,7 @@ function createBackup() {
     tar -zcf "${BACKUP_DIR}/${USERNAME}.tar.gz" "${HOME_DIR}" &>'/dev/null'
     echo "Backup created at ${BACKUP_DIR}/${USERNAME}.tar.gz"
 }
-
+jz
 function isSystemAccount() {
     # Usage: isSystemAccount [USERNAME]
     local USERNAME="${1}"
