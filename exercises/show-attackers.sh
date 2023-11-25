@@ -23,9 +23,7 @@ ip_counts=$(
 
 # echo counts,ips,locations to stdout
 echo "count,ip,location"
-echo "$ip_counts" | while read -r line; do
-    count=$(echo "$line" | cut -d ' ' -f 1)
-    ip=$(echo "$line" | cut -d ' ' -f 2)
+echo "$ip_counts" | while read -r count ip; do
     country=$(geoiplookup "$ip" | awk '{print $NF}')
     echo "$count,$ip,$country"
 done
